@@ -27,12 +27,7 @@ import { SignatureVerifierService } from './services/signature-verifier.service'
   controllers: [PurchasesController, RTDNController],
 
   // Providers: lógica de negocio e infraestructura que se inyecta vía DI
-  providers: [
-    PurchasesService,
-    RTDNService,
-    GoogleAuthService,
-    SignatureVerifierService,
-  ],
+  providers: [PurchasesService, RTDNService, GoogleAuthService, SignatureVerifierService],
 
   // Exports: qué parte de este módulo puede usarse en otros módulos
   // (ej: si otro módulo necesita usar PurchasesService)
