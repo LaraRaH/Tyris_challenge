@@ -1,6 +1,31 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
+/**
+ * ActiveCampaignClient
+ * ---------------------
+ * Propósito:
+ * Este cliente encapsula todas las llamadas HTTP a la API externa de ActiveCampaign.
+ *
+ * Contexto:
+ * - La API de ActiveCampaign es REST y requiere autenticación con API Key.
+ * - En vez de llamar a axios directamente en los servicios, concentramos
+ *   toda la lógica de comunicación en esta clase de infraestructura.
+ * - Esto facilita:
+ *   - Reutilizar configuración (baseURL, headers).
+ *   - Manejar errores, timeouts, retries de forma centralizada.
+ *   - Sustituir por un mock en tests.
+ *
+ * Flujo:
+ * - El constructor obtiene la config (baseUrl + apiKey) desde ActiveCampaignAuthService.
+ * - Se crea un cliente Axios con esa configuración.
+ * - Los métodos implementan endpoints concretos:
+ *   - `createContact`: POST /api/3/contacts
+ *   - `getContactById`: GET /api/3/contacts/{id}
+ *   - `getContactByEmail`: GET /api/3/contacts?email=...
+ */
+
 import axios, { AxiosInstance } from 'axios';
 import { Injectable } from '@nestjs/common';
 import { ActiveCampaignAuthService } from '../services/activecampaign-auth.service';
@@ -23,6 +48,12 @@ export class ActiveCampaignClient {
     });
   }
 
+  /**
+   * Crea un nuevo contacto en ActiveCampaign.
+   * Endpoint: POST /api/3/contacts
+   * ActiveCampaign espera un body con la forma { contact: { ... } }
+   */
+
   // POST /api/3/contacts
   async createContact(payload: {
     email: string;
@@ -40,6 +71,12 @@ export class ActiveCampaignClient {
       lastName: c?.lastName,
     };
   }
+
+  /**
+   * Busca un contacto por email.
+   * Endpoint: GET /api/3/contacts?email=foo@bar.com
+   * Si no existe devuelve null.
+   */
 
   // GET /api/3/contacts/{id}
   async getContactById(id: string): Promise<ACContact> {
